@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <head>
+        <title>Diabetes Predictor</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+<body>
+    <h2>Enter Details to Predict Diabetes</h2>
+    <form action="/predict" method="post">
+        {% for i in range(8) %}
+            <input type="number" name="f{{ i }}" step="any" required><br><br>
+        {% endfor %}
+        <input type="submit" value="Predict">
+    </form>
+    {% if prediction_text %}
+        <h3>{{ prediction_text }}</h3>
+    {% endif %}
+</body>
+</html>
