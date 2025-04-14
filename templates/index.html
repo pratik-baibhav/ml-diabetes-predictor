@@ -1,45 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diabetes Prediction</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+>
 </head>
 <body>
-    <div class="container">
-        <h1>Diabetes Prediction</h1>
-        <form action="/predict" method="POST">
-            <label for="pregnancies">Pregnancies:</label>
-            <input type="number" name="pregnancies" required><br>
+    <h1>Diabetes Prediction</h1>
+    <form id="predict-form">
+        <label for="feature1">Pregnancies:</label><br>
+        <input type="number" id="feature1" name="feature1"><br><br>
 
-            <label for="glucose">Glucose:</label>
-            <input type="number" name="glucose" required><br>
+        <label for="feature2">Glucose:</label><br>
+        <input type="number" id="feature2" name="feature2"><br><br>
 
-            <label for="blood_pressure">Blood Pressure:</label>
-            <input type="number" name="blood_pressure" required><br>
+        <label for="feature3">Blood Pressure:</label><br>
+        <input type="number" id="feature3" name="feature3"><br><br>
 
-            <label for="skin_thickness">Skin Thickness:</label>
-            <input type="number" name="skin_thickness" required><br>
+        <label for="feature4">Skin Thickness:</label><br>
+        <input type="number" id="feature4" name="feature4"><br><br>
 
-            <label for="insulin">Insulin:</label>
-            <input type="number" name="insulin" required><br>
+        <label for="feature5">Insulin:</label><br>
+        <input type="number" id="feature5" name="feature5"><br><br>
 
-            <label for="bmi">BMI:</label>
-            <input type="number" step="0.01" name="bmi" required><br>
+        <label for="feature6">BMI:</label><br>
+        <input type="number" id="feature6" name="feature6"><br><br>
 
-            <label for="diabetes_pedigree">Diabetes Pedigree:</label>
-            <input type="number" step="0.01" name="diabetes_pedigree" required><br>
+        <label for="feature7">Diabetes Pedigree Function:</label><br>
+        <input type="number" id="feature7" name="feature7"><br><br>
 
-            <label for="age">Age:</label>
-            <input type="number" name="age" required><br><br>
+        <label for="feature8">Age:</label><br>
+        <input type="number" id="feature8" name="feature8"><br><br>
 
-            <input type="submit" value="Predict">
-        </form>
+        <button type="submit">Predict</button>
+    </form>
 
-        {% if prediction %}
-        <h2>Prediction: {{ prediction }}</h2>
-        {% endif %}
-    </div>
+    <h2>Prediction Result: <span id="prediction-result">N/A</span></h2>
+
+    <script>
+        document.getElementById('predict-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = {};
+
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    features: Object.values(data).map(val => parseFloat(val))
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                document.getElementById('prediction-result').textContent = result.prediction;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
 </body>
 </html>
